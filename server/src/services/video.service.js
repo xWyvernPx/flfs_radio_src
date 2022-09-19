@@ -2,40 +2,13 @@
 //   video: Video;
 //   currentTime: number;
 // }
+const { result } = require("lodash");
 const axiosClient = require("../helpers/axiosClient");
 const Video = require("../models/video.model");
 const youtubeService = require("./youtube.service");
 
 class VideoService {
-  constructor() {
-    this.playlist = [];
-    this.setPlaylist();
-    this.currentVideo = {
-      index: 0,
-      video: null,
-      currentTime: 0,
-    };
-    if (this.playlist.length > 0) this.currentVideo.video = this.playlist[0];
-    setInterval(() => {
-      if (!this.currentVideo.video && this.playlist.length > 0)
-        this.currentVideo.video = this.playlist[0];
-      if (this.currentVideo.video) {
-        console.log("been here");
-        this.currentVideo.currentTime += 1;
-        console.log(
-          `Current time is ${this.currentVideo.currentTime} and duration is ${this.currentVideo.video.duration}`
-        );
-        console.log(`current video is ${this.currentVideo.video.title}`);
-        if (this.currentVideo.currentTime >= this.currentVideo.video.duration) {
-          if (this.currentVideo.index >= this.playlist.length - 1)
-            this.setPlaylist().then(() => {
-              this.nextVideo();
-            });
-          else this.nextVideo();
-        }
-      }
-    }, 1000);
-  }
+  constructor() {}
   async roundRobinIndex() {
     if (this.currentVideo.index >= this.playlist.length - 1) {
       this.currentVideo.index = 0;
@@ -47,21 +20,18 @@ class VideoService {
     const videos = await Video.find(
       {},
       {},
-      { limit: 10, sort: { createdAt: -1 } }
+      { limit: this.playlistLimit, sort: { rating: -1 } }
     );
     this.playlist = videos;
   }
-  async nextVideo() {
-    await this.roundRobinIndex();
-    console.log("Next video is ", this.playlist[this.currentVideo.index]);
-    this.currentVideo.video = this.playlist[this.currentVideo.index];
-    this.currentVideo.currentTime = 0;
-  }
+
   async isExisted(videoId) {
     const video = await Video.findOne({ videoId });
     return !!video;
   }
   async addNewVideo(videoId, suggestedBy) {
+    if (await this.isExisted(videoId)) return await Video.findOne({ videoId });
+
     const video = await youtubeService.getVideo(videoId);
     if (!video) throw new Error("Video not found");
     const addResult = await Video.create({
@@ -74,78 +44,145 @@ class VideoService {
     const videos = await Video.find(
       {},
       {},
-      { limit: 10, sort: { createdAt: -1 } }
+      { limit: this.playlistLimit, sort: { rating: -1, createdAt: -1 } }
     );
 
     return videos;
   }
   async upvoteVideo(videoId, userId) {
+    console.log("UPVOTEEEEEEE");
     const video = await Video.findOne({ videoId });
     const { upvote, downvote } = video;
     const isExisted = upvote?.includes(userId);
     const isExistedRev = downvote?.includes(userId);
-    console.log(isExisted);
     if (!isExisted) {
       if (!isExistedRev) {
         const result = await Video.findOneAndUpdate(
           { videoId: videoId },
-          { $push: { upvote: userId } }
+          { $push: { upvote: userId }, $inc: { rating: 1 } }
         );
+        this.playlist.forEach((video) => {
+          if (video.videoId === result.videoId) {
+            video.downvote = [...result.downvote];
+            video.upvote = [...result.upvote];
+          }
+        });
         return result;
       } else {
-        return await Video.findOneAndUpdate(
+        const result = await Video.findOneAndUpdate(
           { videoId: videoId },
-          { $pull: { downvote: userId } }
-        ).then(() =>
-          Video.findOneAndUpdate(
-            { videoId: videoId },
-            { $push: { upvote: userId } }
-          )
+          { $pull: { downvote: userId }, $inc: { rating: 1 } }
+        ).then(
+          async () =>
+            await Video.findOneAndUpdate(
+              { videoId: videoId },
+              { $push: { upvote: userId }, $inc: { rating: 1 } }
+            )
         );
+        this.playlist.forEach((video) => {
+          if (video.videoId === result.videoId) {
+            video.downvote = [...result.downvote];
+            video.upvote = [...result.upvote];
+          }
+        });
+        return result;
       }
     } else {
       const result = await Video.findOneAndUpdate(
         { videoId: videoId },
-        { $pull: { upvote: userId } }
+        { $pull: { upvote: userId }, $inc: { rating: -1 } }
       );
+      this.playlist.forEach((video) => {
+        if (video.videoId === result.videoId) {
+          video.downvote = [...result.downvote];
+          video.upvote = [...result.upvote];
+        }
+      });
       return result;
     }
   }
   async downvoteVideo(videoId, userId) {
+    console.log("DOWNVOTEEEEEEE");
+
     const video = await Video.findOne({ videoId });
     const { upvote, downvote } = video;
     const isExisted = downvote?.includes(userId);
     const isExistedRev = upvote?.includes(userId);
-    console.log(isExisted);
+    // console.log("PLAYLIST", this.playlist);
     if (!isExisted) {
       if (!isExistedRev) {
+        console.log("DOWNVOTEEEEEEE 11111");
         const result = await Video.findOneAndUpdate(
           { videoId: videoId },
-          { $push: { downvote: userId } }
+          { $push: { downvote: userId }, $inc: { rating: -1 } }
         );
+        this.playlist.forEach((video) => {
+          if (video.videoId === result.videoId) {
+            video.downvote = [...result.downvote];
+            video.upvote = [...result.upvote];
+          }
+          console.log("MATCH", video);
+        });
         return result;
       } else {
-        return await Video.findOneAndUpdate(
+        console.log("DOWNVOTEEEEEEE 2222");
+        await Video.findOneAndUpdate(
           { videoId: videoId },
-          { $pull: { upvote: userId } }
-        ).then(() =>
-          Video.findOneAndUpdate(
-            { videoId: videoId },
-            { $push: { downvote: userId } }
-          )
+          { $pull: { upvote: userId }, $inc: { rating: -1 } }
         );
+        const result = await Video.findOneAndUpdate(
+          { videoId: videoId },
+          { $push: { downvote: userId }, $inc: { rating: -1 } }
+        );
+        this.playlist.forEach((video) => {
+          if (video.videoId === result.videoId) {
+            video.downvote = [...result.downvote];
+            video.upvote = [...result.upvote];
+          }
+        });
+        return result;
       }
     } else {
+      console.log("DOWNVOTEEEEEEE 2222");
       const result = await Video.findOneAndUpdate(
         { videoId: videoId },
-        { $pull: { downvote: userId } }
+        { $pull: { downvote: userId }, $inc: { rating: 1 } }
       );
+      this.playlist.forEach((video) => {
+        if (video.videoId === result.videoId) {
+          video.downvote = [...result.downvote];
+          video.upvote = [...result.upvote];
+        }
+        console.log("MATCH", video);
+      });
       return result;
     }
+  }
+  async getRandomVideo(limit) {
+    const setVideos = new Set();
+    const count = await Video.count();
+    //  TODO :case limit > count
+    if (limit >= count) {
+      return await Video.find({});
+    }
+    while (setVideos.size <= limit - 1) {
+      const rand = Math.floor(Math.random() * count);
+      setVideos.add(rand);
+      console.log(setVideos.values());
+    }
+    const listIndex = Array.from(setVideos);
+    console.log(listIndex);
+    const videos = await Promise.all(
+      listIndex.map(
+        async (index) => await Video.findOne({}, {}, { skip: index })
+      )
+    );
+    const result = await Video.find({}, {});
+    return videos;
   }
   async searchVideos(query, nextToken) {
     const videos = await youtubeService.searchVideos(query, nextToken);
     return videos;
   }
 }
-module.exports = new VideoService();
+module.exports = VideoService;

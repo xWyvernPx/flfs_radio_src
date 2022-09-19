@@ -1,8 +1,8 @@
 const express = require("express");
 const JSend = require("../helpers/JSend");
 const videoRouter = express.Router();
-const videoService = require("../services/video.service");
-
+const VideoService = require("../services/video.service");
+const videoService = new VideoService();
 videoRouter.get("/", async (req, res) => {
   try {
     const videos = await videoService.getAllVideos();
@@ -45,6 +45,10 @@ videoRouter.post("/downvote", async (req, res) => {
   const result = await videoService.downvoteVideo(videoId, userId);
 
   res.json(result);
+});
+videoRouter.get("/random", async (req, res) => {
+  const result = await videoService.getRandomVideo(15);
+  return res.json(result);
 });
 
 module.exports = videoRouter;

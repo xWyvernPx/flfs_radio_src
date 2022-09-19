@@ -5,6 +5,7 @@ import useVideo from "../../../../hooks/useVideo";
 import { useRecoilValue } from "recoil";
 import authAtom from "../../../_atom/auth.atom";
 import { useMemo } from "react";
+import { toast } from "react-toastify";
 const PlaylistItemContainer = styled.div`
   padding: 0 0.75rem;
   display: flex;
@@ -76,7 +77,6 @@ const SuggestedBy = styled.span`
 const PlaylistItem = ({ data, isPlaying, upvoteHandle, downvoteHandle }) => {
   const auth = useRecoilValue(authAtom);
   const id = useMemo(() => auth?.user?._id, [auth]);
-  console.log(data);
   return (
     <PlaylistItemContainer isPlaying={isPlaying}>
       <ImgWrapper>
@@ -87,14 +87,21 @@ const PlaylistItem = ({ data, isPlaying, upvoteHandle, downvoteHandle }) => {
         <VotingContainer>
           <VotingButton
             active={data?.upvote?.includes(id)}
-            onClick={() => upvoteHandle(data?.videoId, auth?.user?._id)}
+            onClick={() => {
+              if (id) upvoteHandle(data?.videoId, auth?.user?._id);
+              else toast.error("You must be logged in");
+            }}
           >
             <IconThumbUp />
             <span>{data?.upvote?.length}</span>
           </VotingButton>
           <VotingButton
             active={data?.downvote?.includes(id)}
-            onClick={() => downvoteHandle(data?.videoId, auth?.user?._id)}
+            onClick={() => {
+              console.log(auth.isLoggedIn);
+              if (id) downvoteHandle(data?.videoId, auth?.user?._id);
+              else toast.error("You must be logged in");
+            }}
           >
             <IconThumbDown />
             <span>{data?.downvote?.length}</span>

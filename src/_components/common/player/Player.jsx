@@ -5,48 +5,25 @@ import styled from "styled-components";
 
 import { IconPlayerPlay, IconVolume, IconVolume2 } from "@tabler/icons";
 import { useRecoilState } from "recoil";
-import useSocket from "../../../../hooks/useSocket";
 import playlistAtom from "../../../_atom/playlist.atom";
-const Player = () => {
+const Player = ({ socket }) => {
   const playerRef = useRef(null);
   const [listState, setListState] = useRecoilState(playlistAtom);
-  const { socket, getCurrentVideo } = useSocket();
   const [currentVideo, setCurrentVideo] = useState(null);
   useEffect(() => {
     getCurrentVid();
   }, []);
-  // useEffect(() => {
-  //   if (currentVideo?.video) {
-  //     const player = new YT.Player("player", {
-  //       height: "390",
-  //       width: "640",
-  //       videoId: `${currentVideo.video.videoId}`,
-  //       enablejsapi: 1,
-  //       playerVars: {
-  //         autoplay: 1,
-  //         // controls: 0,
-  //         mute: 1,
-  //         start: `${currentVideo.currentTime}`,
-  //       },
-  //       events: {
-  //         onReady: onPlayerReady,
-  //         ready: onPlayerReady,
-  //       },
-  //     });
-  //   }
-  // }, [currentVideo]);
+
   const onPlayerReady = (event) => {
     event.target.setVolume(100);
     event.target.playVideo();
   };
   const getCurrentVid = () => {
-    if (!socket.connected) socket.connect();
-    socket.emit("UPDATE");
-    socket.on("UPDATE", (data) => {
+    // if (!socket?.connected) socket?.connect();
+    socket?.emit("UPDATE");
+    socket?.on("UPDATE", (data) => {
       // setSeekTime(data.currentTime);
       // setCurrentVideo(data.video);
-
-      console.log(data);
       setListState({
         ...listState,
         currentVidId: data?.video?._id,
@@ -56,23 +33,13 @@ const Player = () => {
     });
   };
   const playHandler = () => {
-    playerRef.current.getInternalPlayer().playVideoAt(currentVideo.currentTime);
+    // playerRef.current.getInternalPlayer().playVideoAt(currentVideo.currentTime);
 
-    // playerRef.current.internalPlayer.playVideo();
+    playerRef.current.internalPlayer.playVideo();
   };
 
   return (
     <div>
-      {/* <audio
-        controls
-        autoPlay
-        muted
-        onLoad={() => {
-          this.play();
-        }}
-      >
-        <source src="https://ik.imagekit.io/flamefoxeswyvernp/Test/video2_3mpLiDRoA.mp4" />
-      </audio> */}
       {currentVideo && currentVideo.video && (
         <YouTube
           style={{
@@ -113,7 +80,6 @@ const Player = () => {
           //   e.target.unMute();
           // }}
           onStateChange={(e) => {
-            console.log(e);
             if (e.data != 0 && e.data != 1) e.target.playVideo();
           }}
           ref={playerRef}
@@ -122,9 +88,10 @@ const Player = () => {
       <div id="player"></div>
       <PlayerFunction>
         <PlayButton
-          onClick={() => {
-            playerRef.current.getInternalPlayer().playVideo();
-          }}
+          // onClick={() => {
+          //   playerRef.current.getInternalPlayer().playVideo();
+          // }}
+          onClick={() => playHandler()}
         >
           <IconPlayerPlay id="play-button" color="white" />
         </PlayButton>
@@ -139,7 +106,6 @@ const Player = () => {
               max={100}
               step={5}
               onChange={(e) => {
-                console.log(e.target.value);
                 playerRef.current.getInternalPlayer().setVolume(e.target.value);
               }}
             ></RangeSlider>

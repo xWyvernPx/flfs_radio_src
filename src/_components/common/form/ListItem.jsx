@@ -79,8 +79,8 @@ const SuggestButton = styled.button`
   font-size: 0.75rem;
   font-weight: 600;
 `;
-const ListItem = ({ video }) => {
-  const { addNewVideo } = useVideo();
+const ListItem = ({ video, socket }) => {
+  // const { addNewVideo } = useVideo();
   const auth = useRecoilValue(authAtom);
   return (
     <ListItemContainer>
@@ -95,13 +95,14 @@ const ListItem = ({ video }) => {
       <SuggestButton
         onClick={() => {
           if (auth.isLoggedIn) {
-            addNewVideo(video.videoId, auth?.user?.name).then((data) => {
-              if (data.status != "SUCCESS") {
-                toast(data?.data);
-              } else {
-                toast("Add successfully!");
-              }
-            });
+            // addNewVideo(video.videoId, auth?.user?.name).then((data) => {
+            //   if (data.status != "SUCCESS") {
+            //     toast(data?.data);
+            //   } else {
+            //     toast("Add successfully!");
+            //   }
+            // });
+            socket.emit("SUGGEST_VIDEO", video.videoId, auth?.user?.name);
           } else {
             toast("You need to login first!");
           }

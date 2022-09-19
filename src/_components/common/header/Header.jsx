@@ -88,13 +88,13 @@ const SuggestWrapper = styled.div`
   gap: 1rem;
 `;
 
-const Header = () => {
+const Header = ({ socket }) => {
   const [suggestActive, setSuggestActive] = useState(false);
   const [modal, setModalState] = useRecoilState(modalState);
   return (
     <HeaderContainer>
       <LogoWrapper>
-        <img src="/logo.png" alt="logo" />
+        <img src="./logo.png" alt="logo" />
       </LogoWrapper>
       <SuggestWrapper>
         <SuggestButton
@@ -106,7 +106,7 @@ const Header = () => {
         </SuggestButton>
       </SuggestWrapper>
       <Account />
-      {modal.isOpen && <Modal component={<SuggestionForm />} />}
+      {modal.isOpen && <Modal component={<SuggestionForm socket={socket} />} />}
     </HeaderContainer>
   );
 };

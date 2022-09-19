@@ -21,6 +21,11 @@ const InputSearch = styled.input`
   border: 2px solid #a5a3a1;
   border-radius: 10px;
   margin-bottom: 0.5rem;
+  transition: all 0.2s ease-out;
+  &:focus,
+  &:hover {
+    border-color: #69ecec;
+  }
 `;
 const ListResult = styled.div`
   display: flex;
@@ -38,7 +43,7 @@ const ListResult = styled.div`
     display: none;
   }
 `;
-const SuggestionForm = () => {
+const SuggestionForm = ({ socket }) => {
   const [searchList, setSearchList] = React.useState({
     nextPage: null,
     videos: [],
@@ -65,12 +70,15 @@ const SuggestionForm = () => {
       <InputSearch
         type="text"
         onChange={searchTermChangeHandler}
-        placeholder="Search ..."
+        placeholder="Link/name of video..."
       />
       <ListResult>
-        {searchList?.videos?.map((video) => (
-          <ListItem key={video.id} video={video} />
-        ))}
+        {searchList?.videos?.map(
+          (video) => (
+            <ListItem socket={socket} key={video.videoId} video={video} />
+          )
+          // console.log(video)
+        )}
       </ListResult>
     </SuggestionFormContainer>
   );

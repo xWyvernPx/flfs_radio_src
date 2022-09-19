@@ -1,44 +1,56 @@
-import React, { useEffect } from "react";
+import { IconPlaylist } from "@tabler/icons";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { useRecoilState } from "recoil";
+import { io } from "socket.io-client";
 import styled from "styled-components";
+import playlistAtom from "../../_atom/playlist.atom";
 import Header from "../../_components/common/header/Header";
 import Player from "../../_components/common/player/Player";
-import { IconPlaylist } from "@tabler/icons";
 import Playlist from "../../_components/common/player/Playlist";
-import { useRecoilState, useRecoilValue } from "recoil";
-import playlistAtom from "../../_atom/playlist.atom";
+import ChatChannel from "../../_components/landing/ChatChannel";
+
 const LandingContainer = styled.div``;
 
 const Landing = () => {
   const [playlistState, setPlaylistState] = useRecoilState(playlistAtom);
+  const [socket, setSocket] = useState(() =>
+    io("http://localhost:5000", {
+      autoConnect: true,
+      upgrade: false,
+      transports: ["websocket"],
+    })
+  );
   useEffect(() => {
-    console.log(playlistState);
-  }, [playlistState]);
-
+    socket.on("ERROR", (message) => {
+      toast.error(message);
+    });
+    socket.on("MESSAGE", (message) => toast(message));
+  }, []);
   return (
     <LandingContainer>
-      <Header></Header>
+      <Header socket={socket}></Header>
       <MainLayout>
-        <Player />
-
-        {<Playlist active={playlistState?.showPlaylist} />}
+        <Player socket={socket} />
+        {<Playlist socket={socket} active={playlistState?.showPlaylist} />}
+        <ChatChannel socket={socket} />
+        <PlaylistButton
+          active={playlistState?.showPlaylist}
+          onClick={() => {
+            setPlaylistState({
+              ...playlistState,
+              showPlaylist: !playlistState.showPlaylist,
+            });
+          }}
+        >
+          <IconPlaylist color="white" />
+        </PlaylistButton>
       </MainLayout>
-      <PlaylistButton
-        active={playlistState?.showPlaylist}
-        onClick={() => {
-          setPlaylistState({
-            ...playlistState,
-            showPlaylist: !playlistState.showPlaylist,
-          });
-        }}
-      >
-        <IconPlaylist color="white" />
-      </PlaylistButton>
-      <div className="decor"></div>
     </LandingContainer>
   );
 };
 const PlaylistButton = styled.button`
-  position: fixed;
+  position: absolute;
   right: ${(props) => (props.active ? "20rem" : "0")};
   top: 50%;
   transform: translateY(-50%);
@@ -69,12 +81,15 @@ const PlaylistButton = styled.button`
 `;
 const MainLayout = styled.div`
   --columns: 1;
-  --gap: 0px;
+  --gap: 10px;
   display: grid;
   place-items: center;
-  grid-template-areas: "player";
-  grid-template-columns: 1fr;
+  grid-template-areas: "player chat";
+  grid-template-columns: 1fr fit-content;
   grid-gap: var(--gap);
   position: relative;
+  @media screen and (max-width: 1023.98px) {
+    grid-template-areas: "player" "chat";
+  }
 `;
 export default Landing;

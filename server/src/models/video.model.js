@@ -10,6 +10,10 @@ const videoSchema = new Mongoose.Schema(
     upvote: [{ type: Mongoose.Schema.Types.ObjectId, ref: "Account" }],
     downvote: [{ type: Mongoose.Schema.Types.ObjectId, ref: "Account" }],
     suggestedBy: { type: String, required: true },
+    rating: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

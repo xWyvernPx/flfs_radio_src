@@ -1,17 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 import { io } from "socket.io-client";
-const useSocket = () => {
-  const [socket, setSocket] = useState(() =>
-    io("http://localhost:5000", {
-      autoConnect: true,
-      upgrade: false,
-      transports: ["websocket"],
-    })
-  );
-  // useEffect(() => {
-  //   // const sk = io("http://localhost:5000", { autoConnect: false });
-  //   // setSocket(sk);
-  // }, []);
+import socketAtom from "../src/_atom/socket.atom.js";
+const useSocket = (socket) => {
   const getCurrentVideo = useCallback(
     (setCurrentVideo) => {
       if (!socket.connected) socket.connect();
@@ -23,7 +14,6 @@ const useSocket = () => {
     [socket]
   );
   return {
-    socket,
     getCurrentVideo,
   };
 };

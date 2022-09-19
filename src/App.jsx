@@ -4,9 +4,11 @@ import Landing from "./pages/landing/Landing";
 import playlistAtom from "./_atom/playlist.atom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import WelcomeModal from "./_components/common/modal/WelcomeModal";
+import { useState } from "react";
 function App() {
   const listState = useRecoilValue(playlistAtom);
-
+  const [welcome, setWelcome] = useState(true);
   return (
     <AppLayout style={{ background: `url(${listState?.thumbnail})` }}>
       <AppMain>
@@ -14,6 +16,13 @@ function App() {
       </AppMain>
       <Backdrop></Backdrop>
       <ToastContainer />
+      {welcome && (
+        <WelcomeModal
+          onClose={() => {
+            setWelcome(false);
+          }}
+        />
+      )}
     </AppLayout>
   );
 }
