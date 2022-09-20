@@ -30,6 +30,7 @@ app.use(
     maxAge: 24 * 60 * 60 * 1000,
     sameSite: "none",
     secure: true,
+    domain: process.env.CORS_ORIGIN,
     // overwrite: true,
     // httpOnly: true,
     // path: "/",
