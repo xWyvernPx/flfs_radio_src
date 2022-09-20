@@ -11,16 +11,6 @@ const Player = ({ socket }) => {
   const [listState, setListState] = useRecoilState(playlistAtom);
   const [currentVideo, setCurrentVideo] = useState(null);
   useEffect(() => {
-    getCurrentVid();
-  }, []);
-
-  const onPlayerReady = (event) => {
-    event.target.setVolume(100);
-    event.target.playVideo();
-  };
-  const getCurrentVid = () => {
-    // if (!socket?.connected) socket?.connect();
-    socket?.emit("UPDATE");
     socket?.on("UPDATE", (data) => {
       // setSeekTime(data.currentTime);
       // setCurrentVideo(data.video);
@@ -31,11 +21,21 @@ const Player = ({ socket }) => {
       });
       setCurrentVideo(data);
     });
+    getCurrentVid();
+  }, []);
+
+  const onPlayerReady = (event) => {
+    event.target.setVolume(100);
+    event.target.playVideo();
+  };
+  const getCurrentVid = () => {
+    // if (!socket?.connected) socket?.connect();
+    socket?.emit("UPDATE");
   };
   const playHandler = () => {
     // playerRef.current.getInternalPlayer().playVideoAt(currentVideo.currentTime);
-
-    playerRef.current.internalPlayer.playVideo();
+    getCurrentVid();
+    playerRef.playerRef.current.internalPlayer.playVideo();
   };
 
   return (
@@ -183,9 +183,11 @@ const PlayButton = styled.button`
   }
 `;
 const PlayerFunction = styled.div`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   justify-content: center;
   align-items: center;
 `;

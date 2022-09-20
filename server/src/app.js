@@ -13,7 +13,7 @@ app.use(helmet());
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CORS_ORIGIN,
     // origin: "*",
     credentials: true,
   })
@@ -28,7 +28,8 @@ app.use(
     name: "session",
     secret: "FRESHNESECOM",
     maxAge: 24 * 60 * 60 * 1000,
-    // secure: true,
+    sameSite: "none",
+    secure: true,
     // overwrite: true,
     // httpOnly: true,
     // path: "/",

@@ -1,21 +1,21 @@
 import React, { useCallback, useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import videoApi from "../../../_api/video.api";
 import playlistAtom from "../../../_atom/playlist.atom";
 import PlaylistItem from "./PlaylistItem";
 
 const Devider = styled.div`
   width: 80%;
   height: 3px;
-  background-color: #f0f0f0;
+  background-color: #000;
+  border-radius: 50%;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 `;
 const PlaylistContainer = styled.div`
   /* background-color: red; */
-  width: ${(props) => (props.active ? "20rem" : "0")};
+  width: ${(props) => (props.active ? "27rem" : "0")};
   position: absolute;
   right: 0;
   margin-top: 2rem;
@@ -23,11 +23,12 @@ const PlaylistContainer = styled.div`
   padding: 1rem 0;
   overflow-y: auto;
   grid-area: playlist;
-  background: rgba(230, 245, 250, 0.819);
+  background: rgba(230, 245, 250, 1);
   /* border: 1px solid rgb(131, 130, 130); */
   border-radius: 0.5rem 0 0 0.5rem;
-  box-shadow: 0px 0px 15px -7px rgba(255, 255, 255, 0.662);
-  transition: width 0.2s linear;
+  box-shadow: 0px 0px 15px -7px rgba(255, 255, 255, 0.662),
+    0px 0px 12px 3px rgba(0, 0, 0, 0.2);
+  transition: width 0.3s ease-out, opacity 0.05s linear;
   & {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -35,6 +36,7 @@ const PlaylistContainer = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+  opacity: ${(props) => (props.active ? "1" : "0.5")};
 `;
 const Headline = styled.h2`
   display: block;

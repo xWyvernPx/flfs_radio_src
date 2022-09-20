@@ -13,9 +13,12 @@ const ChatWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  padding: 1.5rem 1rem;
-  background-color: white;
+  padding: 1.5rem 1.5rem;
+  background-color: hsl(265, 38%, 89%);
+  background: white;
   border-radius: 10px;
+  box-shadow: 2px 2px 10px 3px rgba(255, 255, 255, 0.3);
+  /* overflow: hidden; */
 `;
 const ChatHeader = styled.span`
   width: 100%;
@@ -24,6 +27,8 @@ const ChatHeader = styled.span`
   font-weight: 600;
   padding-bottom: 1rem;
   border-bottom: 2px solid black;
+  color: black;
+  /* text-transform: uppercase; */
 `;
 const MessageArea = styled.div`
   display: flex;
@@ -63,7 +68,6 @@ const ChatChannel = ({ socket }) => {
     if (!socket?.connected) socket?.connect();
     // socket?.emit("SEND_MESSAGE");
     socket?.on("UPDATE_MESSAGE", (data) => {
-      
       setChats(data);
     });
     socket?.emit("UPDATE_MESSAGE");

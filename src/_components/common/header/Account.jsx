@@ -40,7 +40,7 @@ export const Account = () => {
           Hi, {auth?.user?.name}
           <LogoutButton
             onClick={() =>
-              window.open("http://localhost:5000/user/logout", "_self")
+              window.open(`${import.meta.env.VITE_BE_URL}/user/logout`, "_self")
             }
           >
             <IconLogout color="white" />
@@ -50,14 +50,20 @@ export const Account = () => {
         <span>
           <button
             onClick={() => {
-              window.open("http://localhost:5000/auth/google", "_self");
+              window.open(
+                `${import.meta.env.VITE_BE_URL}/auth/google`,
+                "_self"
+              );
             }}
           >
             <IconBrandGoogle color="white" />
           </button>
           <button
             onClick={() => {
-              window.open("http://localhost:5000/auth/google", "_self");
+              window.open(
+                `${import.meta.env.VITE_BE_URL}/auth/google`,
+                "_self"
+              );
             }}
           >
             <IconBrandFacebook color="white" />

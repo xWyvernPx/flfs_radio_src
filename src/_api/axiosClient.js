@@ -2,7 +2,7 @@ import axios from "axios";
 
 const axiosClient = axios.create({
   // baseURL: "http://116.109.211.183:5050/",
-  baseURL: "http://localhost:5000/",
+  baseURL: import.meta.env.VITE_BE_URL,
   headers: {
     "Content-Type": "application/json",
     // "Access-Control-Allow-Origin": "*",

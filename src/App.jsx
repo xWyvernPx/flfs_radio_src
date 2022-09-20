@@ -10,7 +10,11 @@ function App() {
   const listState = useRecoilValue(playlistAtom);
   const [welcome, setWelcome] = useState(true);
   return (
-    <AppLayout style={{ background: `url(${listState?.thumbnail})` }}>
+    <AppLayout
+      style={{
+        backgroundImage: `url(${listState?.thumbnail})`,
+      }}
+    >
       <AppMain>
         <Landing />
       </AppMain>
@@ -43,12 +47,13 @@ const Backdrop = styled.div`
 `;
 const AppLayout = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
 
   position: relative;
   z-index: 0;
   background: url("https://source.unsplash.com/random");
-  background-size: cover;
+
+  background-size: contain;
   background-position: center;
 `;
 export default App;
