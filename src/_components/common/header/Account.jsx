@@ -61,7 +61,7 @@ export const Account = () => {
           <button
             onClick={() => {
               window.open(
-                `${import.meta.env.VITE_BE_URL}/auth/google`,
+                `${import.meta.env.VITE_BE_URL}/auth/facebook`,
                 "_self"
               );
             }}

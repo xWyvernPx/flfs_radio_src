@@ -37,6 +37,7 @@ const PlaylistContainer = styled.div`
     display: none;
   }
   opacity: ${(props) => (props.active ? "1" : "0.5")};
+  z-index: 20;
 `;
 const Headline = styled.h2`
   display: block;

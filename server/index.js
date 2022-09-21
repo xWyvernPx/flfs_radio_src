@@ -36,7 +36,7 @@ mongoose
       console.log("Client connected");
       socket.emit("UPDATE", videoState.currentVideo.video);
       socketObj.on("UPDATE", () => {
-        socket.emit("UPDATE", {
+        socketObj.emit("UPDATE", {
           currentTime: videoState.currentVideo.currentTime,
           video: videoState.currentVideo.video,
         });

@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { IconPlayerPlay, IconVolume, IconVolume2 } from "@tabler/icons";
 import { useRecoilState } from "recoil";
 import playlistAtom from "../../../_atom/playlist.atom";
+import { emit } from "../../../../server/src/app";
 const Player = ({ socket }) => {
   const playerRef = useRef(null);
   const [listState, setListState] = useRecoilState(playlistAtom);
@@ -62,6 +63,8 @@ const Player = ({ socket }) => {
               cc_load_policy: 0,
               origin: "https://www.flamefoxes.fun",
               // mute: 1,
+              enablejsapi: 1,
+              playsinline: 1,
             },
           }}
           onEnd={() => {

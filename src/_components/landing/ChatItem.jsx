@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 const ChatItemWrapper = styled.div`
+  margin-left: 0.45rem;
+  width: 100%;
   display: flex;
   align-items: center;
   padding: 0.5rem 0;
@@ -14,18 +16,19 @@ const Message = styled.span`
 `;
 const User = styled.div`
   display: inline-flex;
-  height: 2.5rem;
+  height: 2rem;
   flex: 0 0 auto;
   margin-right: 0.75rem;
   font-size: 1rem !important;
   line-height: 1 !important;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.15rem 0.25rem;
-  background-color: #ccc8c8;
+  padding: 0.35rem 0.45rem;
+  background-color: #eaf1f1;
   border-radius: 10px;
   width: fit-content;
   font-weight: 600;
+  transform: translateX(-5px);
 `;
 const UserAvatar = styled.div`
   aspect-ratio: 1;
@@ -53,7 +56,7 @@ const ChatItem = ({ user, message }) => {
           </UserAvatar>
           {user?.name}
         </User>
-        {message}
+        <span style={{ marginBottom: "1rem" }}>{message}</span>
       </Message>
     </ChatItemWrapper>
   );

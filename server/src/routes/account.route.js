@@ -6,6 +6,6 @@ AccountRouter.get("/me", (req, res) => {
 });
 AccountRouter.get("/logout", (req, res) => {
   req.logout();
-  res.redirect("http://localhost:3000/");
+  res.redirect(process.env.SUCCESS_REDIRECT);
 });
 module.exports = AccountRouter;

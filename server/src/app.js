@@ -13,11 +13,23 @@ app.use(helmet());
 app.use(express.json());
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: "https://www.flamefoxes.fun",
     // origin: "*",
+    // methods: ["GET", "POST", "PUT", "PATCH"],
+    // preflightContinue: true,
     credentials: true,
   })
 );
+// app.use(function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "https://www.flamefoxes.fun");
+//   res.header("Access-Control-Allow-Credentials", true);
+//   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json"
+//   );
+//   next();
+// });
 app.use(
   express.urlencoded({
     extended: true,
@@ -27,13 +39,13 @@ app.use(
   cookieSession({
     name: "session",
     secret: "FRESHNESECOM",
-    maxAge: 24 * 60 * 60 * 1000,
+    // maxAge: 24 * 60 * 60 * 1000,
     sameSite: "none",
-    secure: true,
-    domain: process.env.CORS_ORIGIN,
+    // secure: true,
     // overwrite: true,
     // httpOnly: true,
     // path: "/",
+    secureProxy: true,
   })
 );
 app.use(passport.initialize());
