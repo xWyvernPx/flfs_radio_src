@@ -58,17 +58,16 @@ class VideoState {
       currentTime: 0,
     };
   }
-  async suggestVideo(videoId, suggestedBy) {
+  async suggestVideo(videoId, suggestedBy, privateSocket) {
     try {
       const video = await this.videoService.addNewVideo(videoId, suggestedBy);
       if (this.queue.length >= this.QUEUE_LIMIT) {
-        this.socket.emit("ERROR", "Queue is full, coming back next queue");
+        privateSocket?.emit("ERROR", "Queue is full, coming back next queue");
       }
       if (video) this.queue.push(video);
-      // TODO : emit to update queue in FE
-      this.socket.emit("MESSAGE", "Added video to queue ");
+      privateSocket?.emit("MESSAGE", "Added video to queue ");
     } catch (e) {
-      this.socket.emit("ERROR", e.message);
+      privateSocket?.emit("ERROR", e.message);
     }
   }
 }

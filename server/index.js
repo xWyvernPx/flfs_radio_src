@@ -66,7 +66,7 @@ mongoose
         socket.emit("UPDATE_PLAYLIST", videoState.playlist);
       });
       socketObj.on("SUGGEST_VIDEO", async (videoId, suggestedBy) => {
-        await videoState.suggestVideo(videoId, suggestedBy);
+        await videoState.suggestVideo(videoId, suggestedBy, socketObj);
         socket.emit("UPDATE_QUEUE", videoState.queue);
       });
       socketObj.on("UPDATE_QUEUE", async (videoId, queue) => {

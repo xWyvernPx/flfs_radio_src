@@ -88,7 +88,9 @@ const PlaylistItem = ({ data, isPlaying, upvoteHandle, downvoteHandle }) => {
           <VotingButton
             active={data?.upvote?.includes(id)}
             onClick={() => {
-              if (id) upvoteHandle(data?.videoId, auth?.user?._id);
+              if (id)
+                // upvoteHandle(data?.videoId, auth?.user?._id);
+                toast.warning("This is not available at this time");
               else toast.error("You must be logged in");
             }}
           >
@@ -99,7 +101,8 @@ const PlaylistItem = ({ data, isPlaying, upvoteHandle, downvoteHandle }) => {
             active={data?.downvote?.includes(id)}
             onClick={() => {
               console.log(auth.isLoggedIn);
-              if (id) downvoteHandle(data?.videoId, auth?.user?._id);
+              if (id) toast.warning("This is not available at this time");
+              // downvoteHandle(data?.videoId, auth?.user?._id);
               else toast.error("You must be logged in");
             }}
           >

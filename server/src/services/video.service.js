@@ -34,6 +34,10 @@ class VideoService {
 
     const video = await youtubeService.getVideo(videoId);
     if (!video) throw new Error("Video not found");
+    if (video?.duration > 600)
+      throw new Error(
+        "Dude, this video is longer than 10 mintues.Try another one 🦊"
+      );
     const addResult = await Video.create({
       ...video,
       suggestedBy: suggestedBy || "unknown",
