@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { IconPlayerPlay, IconVolume, IconVolume2 } from "@tabler/icons";
 import { useRecoilState } from "recoil";
 import playlistAtom from "../../../_atom/playlist.atom";
+import Television from "../tv/Television";
 const Player = ({ socket }) => {
   const playerRef = useRef(null);
   const [listState, setListState] = useRecoilState(playlistAtom);
@@ -40,64 +41,66 @@ const Player = ({ socket }) => {
 
   return (
     <div>
-      {currentVideo && currentVideo.video && (
-        <YouTube
-          style={{
-            // display: "grid",
-            // placeItems: "center",
-            cursor: "none",
-            pointerEvents: "none",
-            paddingBottom: ".5rem",
-          }}
-          videoId={currentVideo?.video?.videoId}
-          opts={{
-            playerVars: {
-              autoplay: 1,
-              start: currentVideo?.currentTime,
-              controls: 0,
-              modestbranding: 0,
-              rel: 0,
-              showinfo: 0,
-              iv_load_policy: 3,
-              cc_load_policy: 0,
-              origin: "https://www.flamefoxes.fun",
-              // mute: 1,
-              enablejsapi: 1,
-              playsinline: 1,
-            },
-          }}
-          onEnd={() => {
-            if (!socket.connected) socket.connect();
-            socket.emit("UPDATE");
-            socket.on("UPDATE", (data) => {
-              setListState({
-                ...listState,
-                currentVidId: data?.video?._id,
-                thumbnail: data?.video?.thumbnail,
-              });
+      <Television playClickHandle={playHandler}>
+        {currentVideo && currentVideo.video && (
+          <YouTube
+            style={{
+              // display: "grid",
+              // placeItems: "center",
+              cursor: "none",
+              pointerEvents: "none",
+              paddingBottom: ".5rem",
+            }}
+            videoId={currentVideo?.video?.videoId}
+            opts={{
+              playerVars: {
+                autoplay: 1,
+                start: currentVideo?.currentTime,
+                controls: 0,
+                modestbranding: 0,
+                rel: 0,
+                showinfo: 0,
+                iv_load_policy: 3,
+                cc_load_policy: 0,
+                origin: "https://www.flamefoxes.fun",
+                // mute: 1,
+                enablejsapi: 1,
+                playsinline: 1,
+              },
+            }}
+            onEnd={() => {
+              if (!socket.connected) socket.connect();
+              socket.emit("UPDATE");
+              socket.on("UPDATE", (data) => {
+                setListState({
+                  ...listState,
+                  currentVidId: data?.video?._id,
+                  thumbnail: data?.video?.thumbnail,
+                });
 
-              setCurrentVideo(data);
-            });
-          }}
-          // onReady={(e) => {
-          //   e.target.unMute();
-          // }}
-          onStateChange={(e) => {
-            if (e.data != 0 && e.data != 1) e.target.playVideo();
-          }}
-          ref={playerRef}
-        />
-      )}
+                setCurrentVideo(data);
+              });
+            }}
+            // onReady={(e) => {
+            //   e.target.unMute();
+            // }}
+            onStateChange={(e) => {
+              if (e.data != 0 && e.data != 1) e.target.playVideo();
+            }}
+            ref={playerRef}
+          />
+        )}
+      </Television>
       <div id="player"></div>
       <PlayerFunction>
-        <PlayButton
+        {/* <PlayButton
           // onClick={() => {
           //   playerRef.current.getInternalPlayer().playVideo();
           // }}
           onClick={() => playHandler()}
         >
           <IconPlayerPlay id="play-button" color="white" />
-        </PlayButton>
+        </PlayButton> */}
         <FunctionWrapper>
           <FunctionTitle>
             <IconVolume2 color="black" />
@@ -186,7 +189,7 @@ const PlayButton = styled.button`
   }
 `;
 const PlayerFunction = styled.div`
-  margin-top: 1rem;
+  margin-top: 2rem;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;

@@ -26,6 +26,19 @@ const LogoWrapper = styled.div`
     height: 100%;
     object-fit: cover;
     object-position: center;
+    cursor: pointer;
+  }
+  animation: spin 10s infinite cubic-bezier(0.05, 0.37, 1, 0.66);
+  @keyframes spin {
+    0% {
+      transform: rotateZ(-10deg);
+    }
+    50% {
+      transform: rotateZ(750deg);
+    }
+    100% {
+      transform: rotateZ(-10deg);
+    }
   }
 `;
 const SuggestButton = styled.button`
@@ -35,7 +48,13 @@ const SuggestButton = styled.button`
   color: #a5a3a1;
   font-weight: 600;
   font-size: 1.1rem;
-  text-transform: uppercase;
+  @media screen and (max-width: 767.98px) {
+    font-size: 0.9rem;
+    height: 3rem;
+    margin: 0.25rem;
+  }
+
+  /* text-transform: uppercase; */
   z-index: 1;
   line-height: 1.5;
   transition: all 0.2s linear;
@@ -102,7 +121,7 @@ const Header = ({ socket }) => {
             setModalState({ isOpen: true });
           }}
         >
-          Suggest
+          Suggest to Queue
         </SuggestButton>
       </SuggestWrapper>
       <Account />

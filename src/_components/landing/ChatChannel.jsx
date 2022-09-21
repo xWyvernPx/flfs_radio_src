@@ -19,6 +19,7 @@ const ChatWrapper = styled.div`
   border-radius: 10px;
   box-shadow: 2px 2px 10px 3px rgba(255, 255, 255, 0.3);
   /* overflow: hidden; */
+  margin-bottom: 2rem;
 `;
 const ChatHeader = styled.span`
   width: 100%;

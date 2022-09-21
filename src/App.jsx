@@ -1,11 +1,11 @@
+import { useState } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import Landing from "./pages/landing/Landing";
 import playlistAtom from "./_atom/playlist.atom";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
 import WelcomeModal from "./_components/common/modal/WelcomeModal";
-import { useState } from "react";
 function App() {
   const listState = useRecoilValue(playlistAtom);
   const [welcome, setWelcome] = useState(true);
@@ -19,7 +19,7 @@ function App() {
         <Landing />
       </AppMain>
       <Backdrop></Backdrop>
-      <ToastContainer />
+      <ToastContainer pauseOnHover={false} pauseOnFocusLoss={false} />
       {welcome && (
         <WelcomeModal
           onClose={() => {

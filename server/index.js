@@ -34,7 +34,7 @@ mongoose
     const videoState = new VideoState(socket);
     socket.on("connection", (socketObj) => {
       console.log("Client connected");
-      socket.emit("UPDATE", videoState.currentVideo.video);
+      socketObj.emit("UPDATE", videoState.currentVideo.video);
       socketObj.on("UPDATE", () => {
         socketObj.emit("UPDATE", {
           currentTime: videoState.currentVideo.currentTime,
@@ -55,7 +55,7 @@ mongoose
         });
       });
       socketObj.on("UPDATE_PLAYLIST", () => {
-        socket.emit("UPDATE_PLAYLIST", videoState.playlist);
+        socketObj.emit("UPDATE_PLAYLIST", videoState.playlist);
       });
       socketObj.on("UPVOTE", async (videoId, userId) => {
         await videoService.upvoteVideo(videoId, userId);

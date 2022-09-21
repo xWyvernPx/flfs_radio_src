@@ -52,6 +52,11 @@ const Landing = () => {
 const PlaylistButton = styled.button`
   position: absolute;
   right: ${(props) => (props.active ? "27rem" : "0")};
+  @media screen and (max-width: 767.98px) {
+    right: ${(props) => (props.active ? "20rem" : "0")};
+    width: 40px;
+    height: 60px;
+  }
   top: 50%;
   transform: translateY(-50%);
   width: 60px;
@@ -76,13 +81,16 @@ const PlaylistButton = styled.button`
     transform: scale(1.4);
     transition: all 0.2s linear;
     stroke: ${(props) => (props.active ? "rgba(15, 226, 219, 0.7);" : "white")};
+    @media screen and (max-width: 767.98px) {
+      transform: scale(1.1);
+    }
   }
 
   &:hover {
     box-shadow: 0px 0px 15px -3px rgba(15, 226, 219, 0.527);
     border-color: rgba(15, 226, 219, 0.7);
     svg {
-      transform: scale(1.45);
+      transform: scale(1.15);
     }
   }
 `;

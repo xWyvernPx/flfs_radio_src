@@ -38,6 +38,9 @@ const PlaylistContainer = styled.div`
   }
   opacity: ${(props) => (props.active ? "1" : "0.5")};
   z-index: 20;
+  @media screen and (max-width: 767.98px) {
+    width: ${(props) => (props.active ? "20rem" : "0")};
+  }
 `;
 const Headline = styled.h2`
   display: block;
