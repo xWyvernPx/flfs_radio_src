@@ -23,10 +23,11 @@ function App() {
       {welcome && (
         <WelcomeModal
           onClose={() => {
-            document
-              .requestStorageAccess()
-              .then(() => console.log("requestStorageAccess ok"))
-              .catch(() => console.log("requestStorageAccess error"));
+            if (document?.hasStorageAccess)
+              document
+                ?.requestStorageAccess()
+                .then(() => console.log("requestStorageAccess ok"))
+                .catch(() => console.log("requestStorageAccess error"));
 
             setWelcome(false);
           }}
