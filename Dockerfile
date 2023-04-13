@@ -6,7 +6,7 @@ COPY package*.json ./
 
 RUN yarn install
 
-COPY . .
+COPY server/ .
 
 EXPOSE 5000
 
