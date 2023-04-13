@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 const Television = ({ children, playClickHandle }) => {
+  const labelRef = useRef();
   return (
     <div className="tv">
       <div className="antenna-container">
@@ -127,8 +128,28 @@ const Television = ({ children, playClickHandle }) => {
               </div> */}
               <div
                 className="button-container"
-                onClick={() => playClickHandle()}
+                style={{
+                  position: "relative",
+                }}
+                onClick={() => {
+                  if(labelRef.current){
+                    labelRef.current.style.setProperty("display", "none");
+            
+                  }
+                  playClickHandle()
+                }}
               >
+                <span ref={labelRef} style={{
+                  position: "absolute",
+                  padding: "1rem",
+                  backgroundColor: "white",
+                  zIndex: "1000",
+                  width : "15rem",
+                  borderRadius: "0 3rem 2rem 2rem",
+                  top: '50%',
+                  left: "100%",
+                  // transform: "translate(100%,0)"
+                }}>Click to play</span>
                 <div className="button"></div>
               </div>
             </div>
