@@ -18,7 +18,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            docker buildx build -t $DOCKER_IMAGE_NAME --load --platform linux/amd64,linux/arm64/v8 --file server/Dockerfile .
+            docker build -t $DOCKER_IMAGE_NAME ./server
       - run:
           name: Push Docker image to Docker Hub
           command: |
