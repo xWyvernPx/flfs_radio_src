@@ -27,7 +27,7 @@ jobs:
             docker push $DOCKERHUB_USERNAME/$DOCKER_IMAGE_NAME
       - add_ssh_keys:
           fingerprints:
-            - "70:ee:cd:14:e5:fe:9a:af:98:32:2d:e9:f0:5c:f3:65"
+            - "e2:ec:75:5e:bb:d7:9f:ba:78:e5:1a:58:a9:1b:56:2e"
       - run:
           name: SSH to server and deploy Docker image
           command: |
@@ -36,7 +36,7 @@ jobs:
               ssh -i ~/.ssh/id_rsa $SSH_USERNAME@$SSH_HOST "docker stop $CONTAINER_ID && docker rm $CONTAINER_ID"
             fi
             ssh -i ~/.ssh/id_rsa $SSH_USERNAME@$SSH_HOST "docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD && docker pull $DOCKERHUB_USERNAME/$DOCKER_IMAGE_NAME && docker run -d -p $DEPLOYMENT_PORT:9001 $DOCKERHUB_USERNAME/$DOCKER_IMAGE_NAME"
-  
+
 workflows:
   version: 2
   build_and_deploy:
