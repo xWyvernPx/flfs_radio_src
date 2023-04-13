@@ -163,27 +163,33 @@ class VideoService {
     }
   }
   async getRandomVideo(limit) {
-    const setVideos = new Set();
-    const count = await Video.count();
-    //  TODO :case limit > count
-    if (limit >= count) {
-      return await Video.find({});
-    }
-    while (setVideos.size <= limit - 1) {
-      const rand = Math.floor(Math.random() * count);
-      setVideos.add(rand);
-      console.log(setVideos.values());
-    }
-    const listIndex = Array.from(setVideos);
-    console.log(listIndex);
-    const videos = await Promise.all(
-      listIndex.map(
-        async (index) => await Video.findOne({}, {}, { skip: index })
-      )
-    );
-    const result = await Video.find({}, {});
+    const videos = await Video.aggregate([
+      { $sample: { size: limit } },
+    ]);
     return videos;
   }
+  // async getRandomVideo(limit) {
+  //   const setVideos = new Set();
+  //   const count = await Video.count();
+  //   //  TODO :case limit > count
+  //   if (limit >= count) {
+  //     return await Video.find({});
+  //   }
+  //   while (setVideos.size <= limit - 1) {
+  //     const rand = Math.floor(Math.random() * count);
+  //     setVideos.add(rand);
+  //     console.log(setVideos.values());
+  //   }
+  //   const listIndex = Array.from(setVideos);
+  //   console.log(listIndex);
+  //   const videos = await Promise.all(
+  //     listIndex.map(
+  //       async (index) => await Video.findOne({}, {}, { skip: index })
+  //     )
+  //   );
+  //   const result = await Video.find({}, {});
+  //   return videos;
+  // }
   async searchVideos(query, nextToken) {
     const videos = await youtubeService.searchVideos(query, nextToken);
     return videos;

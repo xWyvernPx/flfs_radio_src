@@ -23,7 +23,7 @@ const socket = new Server(server, {
 //   console.log("Client connected");
 // });
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 9001;
 mongoose
   .connect(
     "mongodb+srv://sa:WyvernP2506@radio.eho8ms5.mongodb.net/?retryWrites=true&w=majority",
@@ -32,6 +32,8 @@ mongoose
   .then(() => {
     const videoService = new VideoService(socket);
     const videoState = new VideoState(socket);
+    // socket.setMaxListeners(35);
+
     socket.on("connection", (socketObj) => {
       console.log("Client connected");
       socketObj.emit("UPDATE", videoState.currentVideo.video);
