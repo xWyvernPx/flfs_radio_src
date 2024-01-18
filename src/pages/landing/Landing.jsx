@@ -9,11 +9,13 @@ import Header from "../../_components/common/header/Header";
 import Player from "../../_components/common/player/Player";
 import Playlist from "../../_components/common/player/Playlist";
 import ChatChannel from "../../_components/landing/ChatChannel";
+import AppState from "../../_atom/app.atom";
 
 const LandingContainer = styled.div``;
 
 const Landing = () => {
   const [playlistState, setPlaylistState] = useRecoilState(playlistAtom);
+  const [appState, setAppState] = useRecoilState(AppState);
   const [socket, setSocket] = useState(() =>
     io(import.meta.env.VITE_BE_URL, {
       autoConnect: true,
@@ -30,7 +32,7 @@ const Landing = () => {
   return (
     <LandingContainer>
       <Header socket={socket}></Header>
-      <MainLayout>
+      <MainLayout isRadio={appState.playerMode === "radio"}>
         <Player socket={socket} />
         {<Playlist socket={socket} active={playlistState?.showPlaylist} />}
         <ChatChannel socket={socket} />
@@ -95,13 +97,14 @@ const PlaylistButton = styled.button`
   }
 `;
 const MainLayout = styled.div`
+transition: all 0.25s linear;
   margin-top: 5rem;
   --columns: 1;
   --gap: 10px;
   display: grid;
   place-items: center;
-  grid-template-areas: "player chat";
-  grid-template-columns: 1fr fit-content;
+  grid-template-areas: "${({isRadio})=> isRadio ? "player chat" : "player"}";
+  grid-template-columns: ${({isRadio})=> isRadio ? "1fr 1fr" : "1fr"};
   grid-gap: var(--gap);
   position: relative;
   @media screen and (max-width: 1023.98px) {

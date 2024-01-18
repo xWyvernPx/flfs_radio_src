@@ -26,7 +26,7 @@ const socket = new Server(server, {
 const port = process.env.PORT || 9001;
 mongoose
   .connect(
-    "mongodb+srv://sa:WyvernP2506@radio.eho8ms5.mongodb.net/?retryWrites=true&w=majority",
+    process.env.DB_URL,
     { logger: true }
   )
   .then(() => {

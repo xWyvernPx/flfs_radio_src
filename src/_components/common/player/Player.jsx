@@ -7,10 +7,15 @@ import { IconPlayerPlay, IconVolume, IconVolume2 } from "@tabler/icons";
 import { useRecoilState } from "recoil";
 import playlistAtom from "../../../_atom/playlist.atom";
 import Television from "../tv/Television";
+import KaraokePlayer from "./KaraokePlayer";
+import PlayerModeSwitcher from "../switcher/PlayerModeSwitcher";
+import AppState from "../../../_atom/app.atom";
 const Player = ({ socket }) => {
   const playerRef = useRef(null);
   const [listState, setListState] = useRecoilState(playlistAtom);
   const [currentVideo, setCurrentVideo] = useState(null);
+  const [appState, setAppState] = useRecoilState(AppState);
+  
   useEffect(() => {
     socket?.on("UPDATE", (data) => {
       // setSeekTime(data.currentTime);
@@ -40,7 +45,63 @@ const Player = ({ socket }) => {
   };
 
   return (
-    <div>
+    <div style={{
+      width: "100%"
+    }}>
+
+     {appState.playerMode === "karaoke" ? <KaraokePlayer> 
+      {currentVideo && currentVideo.video && (
+          <YouTube
+            style={{
+              // display: "grid",
+              // placeItems: "center",
+              cursor: "none",
+              pointerEvents: "none",
+              // paddingBottom: ".5rem",
+              width: "100%",
+              aspectRatio: "16/9",
+            }}
+            iframeClassName="iframe-kara"
+            videoId={currentVideo?.video?.videoId}
+            opts={{
+              playerVars: {
+                autoplay: 1,
+                start: currentVideo?.currentTime,
+                controls: 0,
+                modestbranding: 0,
+                rel: 0,
+                showinfo: 0,
+                iv_load_policy: 3,
+                cc_load_policy: 0,
+                origin: "https://www.flamefoxes.fun",
+                // mute: 1,
+                enablejsapi: 1,
+                playsinline: 1,
+              },
+            }}
+            onEnd={() => {
+              if (!socket.connected) socket.connect();
+              socket.emit("UPDATE");
+              socket.on("UPDATE", (data) => {
+                setListState({
+                  ...listState,
+                  currentVidId: data?.video?._id,
+                  thumbnail: data?.video?.thumbnail,
+                });
+
+                setCurrentVideo(data);
+              });
+            }}
+            // onReady={(e) => {
+            //   e.target.unMute();
+            // }}
+            onStateChange={(e) => {
+              if (e.data != 0 && e.data != 1) e.target.playVideo();
+            }}
+            ref={playerRef}
+          />
+        )}
+      </KaraokePlayer> :
       <Television playClickHandle={playHandler}>
         {currentVideo && currentVideo.video && (
           <YouTube
@@ -50,6 +111,7 @@ const Player = ({ socket }) => {
               cursor: "none",
               pointerEvents: "none",
               paddingBottom: ".5rem",
+
             }}
             videoId={currentVideo?.video?.videoId}
             opts={{
@@ -90,7 +152,7 @@ const Player = ({ socket }) => {
             ref={playerRef}
           />
         )}
-      </Television>
+      </Television>}
       <div id="player"></div>
       <PlayerFunction>
         {/* <PlayButton
@@ -101,7 +163,9 @@ const Player = ({ socket }) => {
         >
           <IconPlayerPlay id="play-button" color="white" />
         </PlayButton> */}
+
         <FunctionWrapper>
+
           <FunctionTitle>
             <IconVolume2 color="black" />
           </FunctionTitle>
@@ -120,6 +184,8 @@ const Player = ({ socket }) => {
             <IconVolume color="black" />
           </FunctionTitle>
         </FunctionWrapper>
+        <PlayerModeSwitcher/>
+
       </PlayerFunction>
     </div>
   );

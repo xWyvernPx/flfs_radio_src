@@ -13,7 +13,7 @@ app.use(helmet());
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://www.flamefoxes.fun",
+    origin: process.env.CORS_ORIGIN,
     // origin: "*",
     // methods: ["GET", "POST", "PUT", "PATCH"],
     // preflightContinue: true,
