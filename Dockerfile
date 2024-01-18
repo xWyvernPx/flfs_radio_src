@@ -12,7 +12,7 @@ RUN pnpm install
 RUN pnpm build
 
 
-EXPOSE 4451
+EXPOSE 4455
 EXPOSE 4450
 
 CMD ["sh", "-c", "serve -l 4550 -s dist & node server/index.js"]
