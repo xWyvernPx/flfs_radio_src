@@ -22,7 +22,7 @@ const PlaylistContainer = styled.div`
   height: 100%;
   padding: 1rem 0;
   overflow-y: auto;
-  grid-area: playlist;
+  /* grid-area: playlist; */
   background: rgba(230, 245, 250, 1);
   /* border: 1px solid rgb(131, 130, 130); */
   border-radius: 0.5rem 0 0 0.5rem;
@@ -37,7 +37,7 @@ const PlaylistContainer = styled.div`
     display: none;
   }
   opacity: ${(props) => (props.active ? "1" : "0.5")};
-  z-index: 20;
+  z-index: 300;
   @media screen and (max-width: 767.98px) {
     width: ${(props) => (props.active ? "20rem" : "0")};
   }
