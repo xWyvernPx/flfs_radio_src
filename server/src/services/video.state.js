@@ -9,7 +9,7 @@ class VideoState {
       video: null,
       currentTime: 0,
     };
-    this.PLAYLIST_LIMIT = 3;
+    this.PLAYLIST_LIMIT = process.env?.EMPTY_LIST_SUGGEST_MAX ?? 3;
     this.QUEUE_LIMIT = 15;
     this.videoService = new VideoService();
     //init playlist IIFE
