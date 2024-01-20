@@ -3,7 +3,7 @@ import { atom } from "recoil";
 const AppState = atom({
   key: "app",
   default: {
-    playerMode : "radio" // prototype : "radio" | "karaoke"
+    playerMode : import.meta.env?.VITE_DEFAULT_MODE ?? "karaoke" // prototype : "radio" | "karaoke"
   },
 });
 export default AppState;
